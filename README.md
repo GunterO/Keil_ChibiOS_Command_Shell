@@ -1,8 +1,8 @@
-# Keil_ChibiOS_Template
+# Keil_ChibiOS_Command_Shell
 
-ChibiOS + Keil µVision
+ChibiOS v2.66 + Keil µVision v5.13.0.0
 
-Simple template (2 blinking LED's) to use ChibiOS with Keil µVision v4 / v5 and a STM32F429I-Discovery board.
+Attempt to get the Virtual Serial Shell demo from ChibiOS running with Keil µVision v4 / v5 and a STM32F429I-Discovery board.
 
 Some changes were made to the ChibiOS source files to make it compile in µVision:
 

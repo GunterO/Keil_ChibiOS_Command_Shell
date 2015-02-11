@@ -13,7 +13,7 @@ conf\chconf.h
 ```
 => 
 ```c++
-#define CH_MEMCORE_SIZE                 1024
+#define CH_MEMCORE_SIZE                 16000
 ```
 This because the missing `Image$$RW_IRAM1$$ZI$$Limit` and `Image$$RW_IRAM2$$Base` definitions in the latest µVision compilers.
 Feel free to change this value, but don't set it to 0 because automatic/full RAM size management is not working for now. 

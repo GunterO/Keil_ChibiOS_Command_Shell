@@ -35,6 +35,8 @@
  */
 /*===========================================================================*/
 
+#define CORTEX_USE_FPU FALSE
+
 /**
  * @brief   System tick frequency.
  * @details Frequency of the system timer that drives the system ticks. This
@@ -72,7 +74,7 @@
  */
 #if !defined(CH_MEMCORE_SIZE) || defined(__DOXYGEN__)
 //(go: missing variables Image$$RW_IRAM1$$ZI$$Limit and Image$$RW_IRAM2$$Base since v4.??) #define CH_MEMCORE_SIZE                 0
-#define CH_MEMCORE_SIZE                 16000
+#define CH_MEMCORE_SIZE                 32768
 #endif
 
 /**

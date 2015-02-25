@@ -164,16 +164,16 @@ void _port_irq_epilogue(void) {
     struct extctx *ctxp;
     register uint32_t psp __asm("psp");
 
-#if CORTEX_USE_FPU
-      register uint32_t fpscr __asm("fpscr");
-#endif
-
     /* Current PSP value.*/
     ctxp = (struct extctx *)psp;
 
 #if CORTEX_USE_FPU
-      /* Triggering a lazy FPU state save.*/
-      ctxp->r0 = (regarm_t)fpscr;
+    /* Enforcing a lazy FPU state save. Note, it goes in the original
+       context because the FPCAR register has not been modified.*/
+    {
+      volatile register uint32_t fpscr __asm("fpscr");
+      (void)fpscr;
+    }
 #endif
 
     /* Adding an artificial exception return context, there is no need to

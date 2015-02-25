@@ -642,7 +642,8 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
   stm32_otg_t *otgp = usbp->otg;
   uint32_t sts, src;
 
-  sts = otgp->GINTSTS & otgp->GINTMSK;
+  sts  = otgp->GINTSTS;
+  sts &= otgp->GINTMSK;
   otgp->GINTSTS = sts;
 
   /* Reset interrupt handling.*/
@@ -765,8 +766,6 @@ static msg_t usb_lld_pump(void *p) {
     }
     chSysLock();
   }
-  //(go: Unreachable) chSysUnlock();
-  //(go: Unreachable) return 0;
 }
 
 #if STM32_USB_USE_OTG1 || defined(__DOXYGEN__)
@@ -835,7 +834,7 @@ void usb_lld_init(void) {
                     (uint8_t *)wsp + sizeof(Thread),
                     CH_THREAD_FILL_VALUE);
     _thread_memfill((uint8_t *)wsp + sizeof(Thread),
-                    (uint8_t *)wsp + sizeof(USBD1.wa_pump) - sizeof(Thread),
+                    (uint8_t *)wsp + sizeof(USBD1.wa_pump),
                     CH_STACK_FILL_VALUE);
   }
 #endif
@@ -857,7 +856,7 @@ void usb_lld_init(void) {
                     (uint8_t *)wsp + sizeof(Thread),
                     CH_THREAD_FILL_VALUE);
     _thread_memfill((uint8_t *)wsp + sizeof(Thread),
-                    (uint8_t *)wsp + sizeof(USBD2.wa_pump) - sizeof(Thread),
+                    (uint8_t *)wsp + sizeof(USBD2.wa_pump),
                     CH_STACK_FILL_VALUE);
   }
 #endif
@@ -1252,8 +1251,7 @@ void usb_lld_prepare_receive(USBDriver *usbp, usbep_t ep) {
  */
 void usb_lld_prepare_transmit(USBDriver *usbp, usbep_t ep) {
   USBInEndpointState *isp = usbp->epc[ep]->in_state;
-  uint32_t pcnt;
-	
+
   /* Transfer initialization.*/
   isp->totsize = isp->txsize;
   if (isp->txsize == 0) {
@@ -1265,7 +1263,7 @@ void usb_lld_prepare_transmit(USBDriver *usbp, usbep_t ep) {
       isp->txsize = EP0_MAX_INSIZE;
 
     /* Normal case.*/
-    pcnt = (isp->txsize + usbp->epc[ep]->in_maxsize - 1) /
+    uint32_t pcnt = (isp->txsize + usbp->epc[ep]->in_maxsize - 1) /
                     usbp->epc[ep]->in_maxsize;
     usbp->otg->ie[ep].DIEPTSIZ = DIEPTSIZ_PKTCNT(pcnt) |
                                  DIEPTSIZ_XFRSIZ(isp->txsize);
